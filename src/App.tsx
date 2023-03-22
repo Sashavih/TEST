@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 
 interface Todo {
-  userid: number,
   id: number,
   title: string,
   completed: boolean
