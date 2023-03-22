@@ -11,7 +11,7 @@ interface Todo {
 function App() {
   const [todos, setTodos] = useState<Todo[]>([]);
   const [value, setValue] = useState('');
-
+  const [newTodo, setNewTodos] = useState<string>('');
   useEffect(() => {
     fetch("https://jsonplaceholder.typicode.com/todos/10")
       .then((response) => response.json())
@@ -21,9 +21,26 @@ function App() {
   const handleSubmit = (e) => {
     e.preventDefault();
     if (!value) return;
-    console.log(value);
+    const newTodo = {
+      id: Date.now(),
+      title: value,
+      completed: false
+    }
+
+    setTodos([...todos, newTodo]);
     setValue('');
   }
+
+  const handleCheckboxClick = (id) => {
+    const updatedTodos = todos.map((todo) => {
+      if (todo.id === id) {
+        return { ...todo, completed: !todo.completed };
+      }
+      return todo;
+    });
+    setTodos(updatedTodos);
+  };
+
 
   return (
     <div>
@@ -32,13 +49,18 @@ function App() {
         <ul>
           {todos.map((todo) => (
             <li key={todo.id}>
-              {todo.title} - {todo.completed ? "Completed" : "Not Completed"}
+              {todo.title}
+              <input
+                type="checkbox"
+                checked={todo.completed}
+                onChange={() => handleCheckboxClick(todo.id)}
+              />
             </li>
           ))}
         </ul>
       </div>
       <form onSubmit={handleSubmit}>
-        <input type="text" value={value} placeholder="Добавьте задачу..." onChange={(e => setValue(e.target.value))} />
+        <input type="text" value={value} placeholder="Добавьте задачу ..." onChange={(e => setValue(e.target.value))} />
         <button type="submit">Добавить</button>
       </form>
     </div>
@@ -46,4 +68,3 @@ function App() {
 }
 
 export default App;
-
